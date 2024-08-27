@@ -5,10 +5,9 @@ import routes from "./routes/routes.js";
 
 const app = express();
 
+app.use(express.json());
+
 app.use(routes);
-
-
-
 
 
 app.get("*", (req, res) => res.status(404).json("Not found"));
