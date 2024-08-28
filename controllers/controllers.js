@@ -9,34 +9,37 @@ function obtenerTodasLasRecetas(req, res) {
 
 // Crear una nueva receta
 function crearReceta(req, res) {
-
-    console.log(req);
-
-    const nuevaReceta = {
+    const result = validationResult(req);
+  
+    if (result.isEmpty()) {
+      const nuevaReceta = {
         id: Number(req.body.id),
         title: req.body.title,
         description: req.body.description,
         preparation: {
-            ingredients: req.body.preparation.ingredients,
-            cooking: req.body.preparation.cooking,
-            total: req.body.preparation.total,
+          ingredients: req.body.preparation.ingredients,
+          cooking: req.body.preparation.cooking,
+          total: req.body.preparation.total,
         },
         instructions: req.body.instructions,
         ingredients: req.body.ingredients,
         nutritionalValues: {
-            calories: Number(req.body.nutritionalValues.calories),
-            carbohydrates: req.body.nutritionalValues.carbohydrates,
-            protein: req.body.nutritionalValues.protein,
-            fat: req.body.nutritionalValues.fat,
-        }
-    };
-
-    recipes.push(nuevaReceta);
-
-    return res.json({
-        message: "Se ha creado una nueva receta"
-    });
-
+          calories: Number(req.body.nutritionalValues.calories),
+          carbohydrates: req.body.nutritionalValues.carbohydrates,
+          protein: req.body.nutritionalValues.protein,
+          fat: req.body.nutritionalValues.fat,
+        },
+      };
+  
+      recipes.push(nuevaReceta);
+  
+      return res.json({
+        message: "Se ha creado una nueva receta",
+      });
+    }
+    {
+      return res.json(result);
+    }
 };
 
 // Actualizar / Editar una receta
