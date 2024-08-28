@@ -1,5 +1,7 @@
 import recipes from "../recipes.js"
 
+import { validationResult } from "express-validator";
+
 // CRUD Recetas
 
 // Retornar todas las recetas
@@ -45,34 +47,41 @@ function crearReceta(req, res) {
 // Actualizar / Editar una receta
 function editarReceta(req, res) {
 
-    const recetaID = Number(req.params.id);
+    const result = validationResult(req);
 
-    recipes.map((receta) => {
-        if (receta.id === recetaID) {
-            receta.title = req.body.title || receta.title;
-            receta.description = req.body.description || receta.description;
-            receta.preparation = {
-                ingredients: req.body.preparation.ingredients || receta.preparation.ingredients,
-                cooking: req.body.preparation.cooking || receta.preparation.cooking,
-                total: req.body.preparation.total || receta.preparation.total,
-            },
-            receta.instructions = req.body.instructions || receta.instructions,
-            receta.ingredients = req.body.ingredients || receta.ingredients,
-            receta.nutritionalValues = {
-                calories: Number(req.body.nutritionalValues.calories) || receta.nutritionalValues.calories,
-                carbohydrates: req.body.nutritionalValues.carbohydrates || receta.nutritionalValues.carbohydrates,
-                protein: req.body.nutritionalValues.protein || receta.nutritionalValues.protein,
-                fat: req.body.nutritionalValues.fat || receta.nutritionalValues.fat,
-        }
-        return res.json({
-            message: `Se han editado los datos de la receta con el id: ${receta.id}`
+    if (result.isEmpty()) {
+        const recetaID = Number(req.params.id);
+
+        recipes.map((receta) => {
+            if (receta.id === recetaID) {
+                receta.title = req.body.title || receta.title;
+                receta.description = req.body.description || receta.description;
+                receta.preparation = {
+                    ingredients: req.body.preparation.ingredients || receta.preparation.ingredients,
+                    cooking: req.body.preparation.cooking || receta.preparation.cooking,
+                    total: req.body.preparation.total || receta.preparation.total,
+                },
+                receta.instructions = req.body.instructions || receta.instructions,
+                receta.ingredients = req.body.ingredients || receta.ingredients,
+                receta.nutritionalValues = {
+                    calories: Number(req.body.nutritionalValues.calories) || receta.nutritionalValues.calories,
+                    carbohydrates: req.body.nutritionalValues.carbohydrates || receta.nutritionalValues.carbohydrates,
+                    protein: req.body.nutritionalValues.protein || receta.nutritionalValues.protein,
+                    fat: req.body.nutritionalValues.fat || receta.nutritionalValues.fat,
+            }
+            return res.json({
+                message: `Se han editado los datos de la receta con el id: ${receta.id}`
+            });
+            }
         });
-        }
-    });
-
-    return res.json({
-        message: "No se ha encontrado la receta con el id indicado"
-    });
+    
+        return res.json({
+            message: "No se ha encontrado la receta con el id indicado"
+        });
+    } 
+    {
+        return res.json(result);
+    }
 
 };
 
